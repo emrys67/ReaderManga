@@ -1,5 +1,6 @@
 package com.vanilaque.mangareader.presentation.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -47,4 +48,9 @@ fun TitleImage(url: String = "https://www.asurascans.com/wp-content/uploads/2021
             .fillMaxSize()
             .clip(RoundedCornerShape(8.dp)), contentScale = ContentScale.Crop
     )
+}
+
+@Composable
+fun TitleImageFromDb(bitmap: Bitmap){
+    //Image(bitmap = bitmap, contentDescription = "cover image")
 }

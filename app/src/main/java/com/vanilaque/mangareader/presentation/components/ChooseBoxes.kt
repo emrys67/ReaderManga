@@ -1,49 +1,52 @@
 package com.vanilaque.mangareader.presentation.components
 
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.vanilaque.mangareader.ui.theme.Purple500
 
-@Preview
 @Composable
-fun ChooseBox(
-    boxText: String = "Newest",
-    boxSize: ChooseBoxSize = ChooseBoxSize.SMALL,
-    isChosen: Boolean = true,
-    onClick: () -> Unit = {}
+fun <T> HorizontalRadioGroup(
+    options: List<T>,
+    getLabel: @Composable (T) -> String,
+    selected: T?,
+    onClick: (T) -> Unit,
+    boxSize: ChooseBoxSize
 ) {
-    val color = remember { mutableStateOf(if (isChosen) Purple500 else Color.Magenta) }
-    Button(
-        onClick = onClick,
-        modifier = Modifier
-            .width(boxSize.width.dp)
-            .height(boxSize.height.dp),
-        colors = ButtonDefaults.buttonColors(backgroundColor = color.value)
-    ) {
-        Text(text = boxText, fontSize = boxSize.fontSize.sp)
-    }
-}
-
-@Composable
-fun ChooseBoxes(
-    modifier: Modifier,
-    boxes: List<ChooseBox>,
-    boxSize: ChooseBoxSize,
-    boxOnClick: (ChooseBox, ChooseBoxSize) -> Unit
-) {
-    var selectedButtonIndex by remember { mutableStateOf(0)}
-    Row() {
-        boxes.forEach { boxOnClick(it, boxSize) }
+    LazyRow(modifier = Modifier.fillMaxWidth()) {
+        items(options) { option ->
+            val isSelected = option == selected
+            Button(
+                onClick = { onClick(option) },
+                modifier = Modifier
+                    .width(boxSize.width.dp)
+                    .height(boxSize.height.dp),
+                shape = RoundedCornerShape(8.dp),
+                colors = ButtonDefaults.outlinedButtonColors(
+                    backgroundColor = if (isSelected) Purple500 else Color.Magenta,
+                ),
+                content = {
+                    Text(
+                        text = getLabel(option),
+                        color = if (isSelected) Purple500 else Color.Magenta,
+                        textAlign = TextAlign.Center,
+                        letterSpacing = 0.sp,
+                    )
+                },
+            )
+        }
     }
 }
 

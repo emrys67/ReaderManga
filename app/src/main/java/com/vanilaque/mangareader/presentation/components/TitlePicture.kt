@@ -1,5 +1,6 @@
 package com.vanilaque.mangareader.presentation.components
 
+import android.graphics.Bitmap
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
@@ -18,6 +19,22 @@ fun TitlePictureFromServer(titlePictureSize: TitlePictureSize = TitlePictureSize
             .height(titlePictureSize.imageHeight.dp),
     ) {
         TitleImage()
+        LikeField(
+            modifier = Modifier.align(Alignment.BottomCenter),
+            likeSize = titlePictureSize.likeSize.dp,
+            fieldWidth = titlePictureSize.fieldWidth.dp,
+            fieldHeight = titlePictureSize.fieldHeight.dp
+        )
+    }
+}
+@Composable
+fun TitlePictureFromDb(titlePictureSize: TitlePictureSize = TitlePictureSize.Medium, bitMap: Bitmap){
+    Box(
+        modifier = Modifier
+            .width(titlePictureSize.imageWidth.dp)
+            .height(titlePictureSize.imageHeight.dp),
+    ) {
+        TitleImageFromDb(bitmap = bitMap)
         LikeField(
             modifier = Modifier.align(Alignment.BottomCenter),
             likeSize = titlePictureSize.likeSize.dp,
