@@ -12,6 +12,7 @@ import com.vanilaque.mangareader.data.repository.ChapterRepository
 import com.vanilaque.mangareader.data.repository.local.LocalChapterRepository
 import com.vanilaque.mangareader.util.MANGA_SCRAPER_HOST
 import com.vanilaque.mangareader.util.MANGA_SCRAPER_KEY
+import com.vanilaque.mangareader.util.toDbModel
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -46,14 +47,14 @@ class ChapterRepositoryImpl @Inject constructor(
         webtoon: String,
         page: Int,
         limit: Int
-    ): Response<List<com.vanilaque.mangareader.api.webservice.Chapter>> {
-        return mangaScraperApi.getChaptersPaginated(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, webtoon, page, limit)
+    ): List<Chapter> {
+        return mangaScraperApi.getChaptersPaginated(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, webtoon, page, limit).body()!!.map { it.toDbModel(webtoon) }
     }
 
     override suspend fun getLastUpdatedFromServer(
         provider: Provider,
         day: Int
-    ): Response<List<com.vanilaque.mangareader.api.webservice.Chapter>> {
-        return mangaScraperApi.getLastUpdated(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, day)
+    ): List<Chapter> {
+        return mangaScraperApi.getLastUpdated(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, day).body()!!.map { it.toDbModel("") }
     }
 }

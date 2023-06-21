@@ -32,7 +32,7 @@ class ProviderRepositoryImpl @Inject constructor(
         localProviderRepository.deleteProvider(provider)
     }
 
-    override suspend fun getProvidersFromServer(): Response<List<Provider>> {
-        return mangaScraperApi.getProviders(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST)
+    override suspend fun getProvidersFromServer(): List<Provider> {
+        return mangaScraperApi.getProviders(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST).body()!!
     }
 }

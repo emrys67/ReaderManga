@@ -1,5 +1,6 @@
 package com.vanilaque.mangareader.api.webservice
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -18,6 +19,7 @@ data class Webtoon(
 
 @Serializable
 data class Chapter(
+    @SerialName("provider_webtoon")
     val provider: String,
     val slug: String,
     val fullTitle: String,

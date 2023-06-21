@@ -20,10 +20,10 @@ interface MangaScraperApi {
     suspend fun getChaptersPaginated(
         @Header("X-RapidAPI-Key") key: String,
         @Header("X-RapidAPI-Host") host: String,
-        provider: String,
-        webtoon: String,
-        page: Int,
-        limit: Int
+        @Query("provider") provider: String,
+        @Query("webtoon") webtoon: String,
+        @Query("page") page: Int,
+        @Query("limit") limit: Int
     ): Response<List<Chapter>>
 
     @GET("/updates")

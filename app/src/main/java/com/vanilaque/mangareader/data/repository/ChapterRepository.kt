@@ -28,10 +28,10 @@ interface ChapterRepository {
         webtoon: String,
         page: Int,
         limit: Int
-    ): Response<List<com.vanilaque.mangareader.api.webservice.Chapter>>
+    ): List<Chapter>
 
     suspend fun getLastUpdatedFromServer(
         provider: Provider,
         day: Int
-    ): Response<List<com.vanilaque.mangareader.api.webservice.Chapter>>
+    ): List<Chapter>
 }

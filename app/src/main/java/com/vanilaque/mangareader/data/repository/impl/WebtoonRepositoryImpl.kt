@@ -9,6 +9,7 @@ import com.vanilaque.mangareader.data.repository.WebtoonRepository
 import com.vanilaque.mangareader.data.repository.local.LocalWebtoonRepository
 import com.vanilaque.mangareader.util.MANGA_SCRAPER_HOST
 import com.vanilaque.mangareader.util.MANGA_SCRAPER_KEY
+import com.vanilaque.mangareader.util.toDbModel
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -41,22 +42,22 @@ class WebtoonRepositoryImpl @Inject constructor(
         provider: Provider,
         page: Int,
         limit: Int
-    ): Response<List<com.vanilaque.mangareader.api.webservice.Webtoon>> {
-        return mangaScraperApi.getWebtoonsPaginated(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, page, limit)
+    ): List<Webtoon> {
+        return mangaScraperApi.getWebtoonsPaginated(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, page, limit).body()!!.map { it.toDbModel() }
     }
 
     override suspend fun getWebtoonByQueryFromServer(
         provider: Provider,
         q: String,
         size: Int
-    ): Response<List<com.vanilaque.mangareader.api.webservice.Webtoon>> {
-        return mangaScraperApi.getWebtoonByQuery(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, q, size, provider.slug)
+    ): List<Webtoon> {
+        return mangaScraperApi.getWebtoonByQuery(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, q, size, provider.slug).body()!!.map { it.toDbModel() }
     }
 
     override suspend fun getWebtoonBySlugFromServer(
         provider: Provider,
         slug: String
-    ): Response<com.vanilaque.mangareader.api.webservice.Webtoon> {
-        return mangaScraperApi.getWebtoonBySlug(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, slug)
+    ): Webtoon {
+        return mangaScraperApi.getWebtoonBySlug(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, slug).body()!!.toDbModel()
     }
 }

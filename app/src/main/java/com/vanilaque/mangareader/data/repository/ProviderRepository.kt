@@ -16,5 +16,5 @@ interface ProviderRepository {
 
     suspend fun deleteProvider(provider: Provider)
 
-    suspend fun getProvidersFromServer(): Response<List<Provider>>
+    suspend fun getProvidersFromServer(): List<Provider>
 }

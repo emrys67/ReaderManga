@@ -23,16 +23,16 @@ interface WebtoonRepository {
         provider: Provider,
         page: Int,
         limit: Int
-    ): Response<List<com.vanilaque.mangareader.api.webservice.Webtoon>>
+    ): List<Webtoon>
 
     suspend fun getWebtoonByQueryFromServer(
         provider: Provider,
         q: String,
         size: Int
-    ): Response<List<com.vanilaque.mangareader.api.webservice.Webtoon>>
+    ): List<Webtoon>
 
     suspend fun getWebtoonBySlugFromServer(
         provider: Provider,
         slug: String
-    ): Response<com.vanilaque.mangareader.api.webservice.Webtoon>
+    ): Webtoon
 }
