@@ -1,8 +1,6 @@
 package com.vanilaque.mangareader.data.repository.impl
 
 import com.vanilaque.mangareader.api.webservice.MangaScraperApi
-import com.vanilaque.mangareader.data.dao.WebtoonDao
-import com.vanilaque.mangareader.data.db.MangaDatabase
 import com.vanilaque.mangareader.data.model.Provider
 import com.vanilaque.mangareader.data.model.Webtoon
 import com.vanilaque.mangareader.data.repository.WebtoonRepository
@@ -10,7 +8,6 @@ import com.vanilaque.mangareader.data.repository.local.LocalWebtoonRepository
 import com.vanilaque.mangareader.util.MANGA_SCRAPER_HOST
 import com.vanilaque.mangareader.util.MANGA_SCRAPER_KEY
 import com.vanilaque.mangareader.util.toDbModel
-import retrofit2.Response
 import javax.inject.Inject
 
 class WebtoonRepositoryImpl @Inject constructor(
@@ -43,7 +40,13 @@ class WebtoonRepositoryImpl @Inject constructor(
         page: Int,
         limit: Int
     ): List<Webtoon> {
-        return mangaScraperApi.getWebtoonsPaginated(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, page, limit).body()!!.map { it.toDbModel() }
+        return mangaScraperApi.getWebtoonsPaginated(
+            MANGA_SCRAPER_KEY,
+            MANGA_SCRAPER_HOST,
+            provider.slug,
+            page,
+            limit
+        ).body()!!.map { it.toDbModel() }
     }
 
     override suspend fun getWebtoonByQueryFromServer(
@@ -51,13 +54,24 @@ class WebtoonRepositoryImpl @Inject constructor(
         q: String,
         size: Int
     ): List<Webtoon> {
-        return mangaScraperApi.getWebtoonByQuery(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, q, size, provider.slug).body()!!.map { it.toDbModel() }
+        return mangaScraperApi.getWebtoonByQuery(
+            MANGA_SCRAPER_KEY,
+            MANGA_SCRAPER_HOST,
+            q,
+            size,
+            provider.slug
+        ).body()!!.map { it.toDbModel() }
     }
 
     override suspend fun getWebtoonBySlugFromServer(
         provider: Provider,
         slug: String
     ): Webtoon {
-        return mangaScraperApi.getWebtoonBySlug(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, slug).body()!!.toDbModel()
+        return mangaScraperApi.getWebtoonBySlug(
+            MANGA_SCRAPER_KEY,
+            MANGA_SCRAPER_HOST,
+            slug,
+            provider.slug
+        ).body()!!.toDbModel()
     }
 }

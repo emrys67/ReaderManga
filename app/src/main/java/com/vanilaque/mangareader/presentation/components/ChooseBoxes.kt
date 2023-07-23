@@ -1,6 +1,6 @@
 package com.vanilaque.mangareader.presentation.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -12,20 +12,27 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.vanilaque.mangareader.ui.theme.Purple500
+import com.vanilaque.mangareader.R
 
 @Composable
-fun <T> HorizontalRadioGroup(
-    options: List<T>,
-    getLabel: @Composable (T) -> String,
-    selected: T?,
-    onClick: (T) -> Unit,
-    boxSize: ChooseBoxSize
+fun HorizontalRadioGroup(
+    options: List<ChooseBox>,
+    selected: ChooseBox,
+    onClick: (ChooseBox) -> Unit,
+    boxSize: ChooseBoxSize,
+    selectedColor: Color,
+    notSelectedColor: Color,
+    modifier: Modifier
 ) {
-    LazyRow(modifier = Modifier.fillMaxWidth()) {
+    LazyRow(
+        modifier = Modifier.then(modifier),
+        horizontalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
         items(options) { option ->
             val isSelected = option == selected
             Button(
@@ -35,34 +42,36 @@ fun <T> HorizontalRadioGroup(
                     .height(boxSize.height.dp),
                 shape = RoundedCornerShape(8.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    backgroundColor = if (isSelected) Purple500 else Color.Magenta,
+                    backgroundColor = if (isSelected) selectedColor else notSelectedColor,
                 ),
                 content = {
                     Text(
-                        text = getLabel(option),
-                        color = if (isSelected) Purple500 else Color.Magenta,
+                        text = stringResource(id = option.resId),
+                        color = Color.White,
                         textAlign = TextAlign.Center,
                         letterSpacing = 0.sp,
+                        fontWeight = FontWeight.Bold
                     )
                 },
+                elevation = ButtonDefaults.elevation(defaultElevation = 4.dp)
             )
         }
     }
 }
 
-enum class ChooseBox {
-    DOWNLOADED,
-    FAVORITES,
-    DESCRIPTION,
-    CHAPTERS,
-    NEWEST,
-    PREVIOUS,
-    TOP
+enum class ChooseBox(val resId: Int) {
+    DOWNLOADED(R.string.downloaded),
+    FAVORITES(R.string.favorites),
+    DESCRIPTION(R.string.description),
+    CHAPTERS(R.string.chapters),
+    NEWEST(R.string.newest),
+    PREVIOUS(R.string.previous),
+    TOP(R.string.top)
 }
 
 enum class ChooseBoxSize(
     val width: Int,
-    val height: Int = CHOOSE_BOX_HEIGHT,
+    val height: Int = CHOOSE_BOX_HEIGHT_NORMAL,
     val fontSize: Int = CHOOSE_BOX_FONT
 ) {
     SMALL(CHOOSE_BOX_WIDTH_SMALL),
@@ -70,7 +79,7 @@ enum class ChooseBoxSize(
     BIG(CHOOSE_BOX_WIDTH_BIG)
 }
 
-const val CHOOSE_BOX_HEIGHT = 48
+const val CHOOSE_BOX_HEIGHT_NORMAL = 48
 
 const val CHOOSE_BOX_WIDTH_SMALL = 100
 const val CHOOSE_BOX_WIDTH_MEDIUM = 140

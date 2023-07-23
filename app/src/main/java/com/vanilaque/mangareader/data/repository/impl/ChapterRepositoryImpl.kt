@@ -1,9 +1,6 @@
 package com.vanilaque.mangareader.data.repository.impl
 
 import com.vanilaque.mangareader.api.webservice.MangaScraperApi
-import com.vanilaque.mangareader.data.dao.ChapterDao
-import com.vanilaque.mangareader.data.dao.ProviderDao
-import com.vanilaque.mangareader.data.db.MangaDatabase
 import com.vanilaque.mangareader.data.model.Chapter
 import com.vanilaque.mangareader.data.model.Provider
 import com.vanilaque.mangareader.data.model.Webtoon
@@ -13,7 +10,6 @@ import com.vanilaque.mangareader.data.repository.local.LocalChapterRepository
 import com.vanilaque.mangareader.util.MANGA_SCRAPER_HOST
 import com.vanilaque.mangareader.util.MANGA_SCRAPER_KEY
 import com.vanilaque.mangareader.util.toDbModel
-import retrofit2.Response
 import javax.inject.Inject
 
 class ChapterRepositoryImpl @Inject constructor(
@@ -48,13 +44,51 @@ class ChapterRepositoryImpl @Inject constructor(
         page: Int,
         limit: Int
     ): List<Chapter> {
-        return mangaScraperApi.getChaptersPaginated(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, webtoon, page, limit).body()!!.map { it.toDbModel(webtoon) }
+        return mangaScraperApi.getChaptersPaginated(
+            MANGA_SCRAPER_KEY,
+            MANGA_SCRAPER_HOST,
+            provider.slug,
+            webtoon,
+            page,
+            limit
+        ).body()!!.map { it.toDbModel(webtoon) }
+    }
+
+    override suspend fun getChaptersFromServer(
+        provider: Provider,
+        webtoon: String,
+    ): List<Chapter> {
+        return mangaScraperApi.getChapters(
+            MANGA_SCRAPER_KEY,
+            MANGA_SCRAPER_HOST,
+            provider.slug,
+            webtoon
+        ).body()!!.map { it.toDbModel(webtoon) }
     }
 
     override suspend fun getLastUpdatedFromServer(
         provider: Provider,
         day: Int
     ): List<Chapter> {
-        return mangaScraperApi.getLastUpdated(MANGA_SCRAPER_KEY, MANGA_SCRAPER_HOST, provider.slug, day).body()!!.map { it.toDbModel("") }
+        return mangaScraperApi.getLastUpdated(
+            MANGA_SCRAPER_KEY,
+            MANGA_SCRAPER_HOST,
+            provider.slug,
+            day
+        ).body()!!.map { it.toDbModel("") }
+    }
+
+    override suspend fun getChapterBySlugFromServer(
+        provider: Provider,
+        mangaSlug: String,
+        chapterSlug: String
+    ): Chapter {
+        return mangaScraperApi.getChapterBySlug(
+            MANGA_SCRAPER_KEY,
+            MANGA_SCRAPER_HOST,
+            chapterSlug,
+            provider.slug,
+            mangaSlug
+        ).body()!!.toDbModel(mangaSlug)
     }
 }

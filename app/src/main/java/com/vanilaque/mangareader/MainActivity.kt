@@ -1,94 +1,74 @@
 package com.vanilaque.mangareader
 
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Surface
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.lifecycleScope
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.AsyncImage
 import com.google.accompanist.pager.ExperimentalPagerApi
-import com.vanilaque.mangareader.api.webservice.MangaScraperApi
-import com.vanilaque.mangareader.data.repository.WebtoonRepository
-import com.vanilaque.mangareader.data.repository.impl.ChapterRepositoryImpl
-import com.vanilaque.mangareader.data.repository.impl.WebtoonRepositoryImpl
+import com.vanilaque.mangareader.presentation.components.Footer
+import com.vanilaque.mangareader.presentation.components.Header
+import com.vanilaque.mangareader.presentation.navigation.MangaNavigation
+import com.vanilaque.mangareader.service.StateManager
 import com.vanilaque.mangareader.ui.theme.MangaReaderTheme
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.runBlocking
-import javax.inject.Inject
 
 @ExperimentalMaterialApi
 @ExperimentalCoilApi
 @ExperimentalAnimationApi
 @ExperimentalPagerApi
 @AndroidEntryPoint
-class MainActivity () : ComponentActivity() {
-    @Inject
-    lateinit var api: MangaScraperApi
-    @Inject
-    lateinit var repo: WebtoonRepositoryImpl
-    @Inject
-    lateinit var repoChap: ChapterRepositoryImpl
+class MainActivity() : ComponentActivity() {
+    private val viewModel: MainViewModel by viewModels()
+    //private val prefManager = PrefManager(this)
 
+    @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            MangaReaderTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colors.background
-                ) {
-                    var image: List<String> = listOf()
-                    Greeting("Android")
-                    runBlocking {
-//                        val response = api.getProviders("e9f4549693msh52493ff0760e9c0p1b12c3jsn19a165f30e41", "manga-scrapper.p.rapidapi.com").body()
-//                        Log.e("response", response.toString())
-//
-//
-//                        val webtoon = repo.getWebtoonByQueryFromServer(response!![1],"shingeki no kyojin", 1).body()!!.first()
-//                        Log.e("webtoon", webtoon.toString())
-//                        val chapters = repoChap.getChaptersPaginatedFromServer(response!![1], webtoon.slug, 1, 1)
-//                        image = chapters.body()!!.first().contentURL
-                    }
-//                    Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-//                    image.forEach{
-//                        AsyncImage(
-//                            model = it,
-//                            contentDescription = null,
-//                            contentScale = ContentScale.FillWidth,
-//                            modifier = Modifier.fillMaxWidth()
-//                        )
-//                    }
-//                    }
+            val isFocused by viewModel.isSearchFieldFocused
+            val searchQuery by viewModel.searchText
+            val footerPath by viewModel.footerPath
+            val showBottomTopBars by StateManager.showBottomTopbars.collectAsState()
 
+            MangaReaderTheme {
+                Scaffold(modifier = Modifier.fillMaxSize(), topBar = {
+                    if (showBottomTopBars)
+                        Header(
+                            text = searchQuery,
+                            onTextChange = { viewModel.searchText.value = it },
+                            onSearchTitle = {
+                                viewModel.searchQuerryForWebtoon()
+                            },
+                            onSearchButtonClicked = {
+                                viewModel.isSearchFieldFocused.value =
+                                    !viewModel.isSearchFieldFocused.value
+                            }, onCloseSearchClicked = {
+                                viewModel.isSearchFieldFocused.value =
+                                    !viewModel.isSearchFieldFocused.value
+                            },
+                            isStateFocused = isFocused
+                        )
+                },
+                    bottomBar = {
+                        if (showBottomTopBars)
+                            Footer({ viewModel.footerPath.value = it }, footerPath)
+                    }) {
+                    Surface(
+                        modifier = Modifier.fillMaxSize(),
+                        color = MaterialTheme.colors.background
+                    ) {
+                        MangaNavigation()
+                    }
                 }
             }
         }
     }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
 }

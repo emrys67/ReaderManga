@@ -1,6 +1,5 @@
 package com.vanilaque.mangareader.data.model
 
-import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverters
@@ -16,10 +15,15 @@ data class Webtoon(
     val providerBaseUrl: String,
     val title: String,
     val sourceURL: String,
-    val shortURL: String,
-    val coverURL: String,
+    val shortURL: String?,
+    val coverURL: String?,
     val synopsis: String,
-    val genre: List<String>,
-    val createdAt: Instant,
-    val updatedAt: Instant
+    val genre: List<String>?,
+    val createdAt: Instant?,
+    val updatedAt: Instant?,
+    var chaptersDownloaded: Int = 0,
+    var lastChapterRead: Int = 0,
+    var lastOpenedAt: Instant?,
+    var addedToFavoritesAt: Instant?,
+    var isInFavorites: Boolean = false
 )

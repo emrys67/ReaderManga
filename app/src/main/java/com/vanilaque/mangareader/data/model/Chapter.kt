@@ -14,12 +14,14 @@ data class Chapter(
     val chapterSlug: String,
     val providerSlug: String,
     val mangaSlug: String,
-    val fullTitle: String,
-    val shortTitle: String,
+    val fullTitle: String?,
+    val shortTitle: String?,
     val chapterNum: Int,
-    val sourceURL: String,
-    val shortURL: String,
-    val contentURL: List<String>,
-    val createdAt: Instant,
-    val updatedAt: Instant
+    val sourceURL: String?,
+    val shortURL: String?,
+    val contentURL: List<String>?,
+    val createdAt: Instant?,
+    val updatedAt: Instant?,
+    val nextChapterSlug: String?,
+    val privChapterSlug: String?
 )

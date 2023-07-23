@@ -7,28 +7,39 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
-@Preview
 @Composable
-fun TitlePictureFromServer(titlePictureSize: TitlePictureSize = TitlePictureSize.Medium) {
+fun TitlePictureFromServer(
+    titlePictureSize: TitlePictureSize = TitlePictureSize.Medium,
+    imageUrl: String,
+    onLikeClick: () -> Unit,
+    isLiked: Boolean
+) {
     Box(
         modifier = Modifier
             .width(titlePictureSize.imageWidth.dp)
             .height(titlePictureSize.imageHeight.dp),
     ) {
-        TitleImage()
+        TitleImage(imageUrl)
         LikeField(
             modifier = Modifier.align(Alignment.BottomCenter),
             likeSize = titlePictureSize.likeSize.dp,
             fieldWidth = titlePictureSize.fieldWidth.dp,
-            fieldHeight = titlePictureSize.fieldHeight.dp
+            fieldHeight = titlePictureSize.fieldHeight.dp,
+            onLikeClick = onLikeClick,
+            isLiked = isLiked
         )
     }
 }
+
 @Composable
-fun TitlePictureFromDb(titlePictureSize: TitlePictureSize = TitlePictureSize.Medium, bitMap: Bitmap){
+fun TitlePictureFromDb(
+    titlePictureSize: TitlePictureSize = TitlePictureSize.Medium,
+    bitMap: Bitmap,
+    onLikeClick: () -> Unit,
+    isLiked: Boolean
+) {
     Box(
         modifier = Modifier
             .width(titlePictureSize.imageWidth.dp)
@@ -39,7 +50,9 @@ fun TitlePictureFromDb(titlePictureSize: TitlePictureSize = TitlePictureSize.Med
             modifier = Modifier.align(Alignment.BottomCenter),
             likeSize = titlePictureSize.likeSize.dp,
             fieldWidth = titlePictureSize.fieldWidth.dp,
-            fieldHeight = titlePictureSize.fieldHeight.dp
+            fieldHeight = titlePictureSize.fieldHeight.dp,
+            onLikeClick = onLikeClick,
+            isLiked = isLiked
         )
     }
 }
